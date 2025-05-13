@@ -1,0 +1,15 @@
+create table countries(
+id_ serial primary key,
+country_name varchar(100)
+);
+Create table cities(
+id_ serial primary key,
+city_name varchar(100),
+population integer check(population>=0),
+country_id integer references countries(id_)
+);
+Create table attractions(
+id_ serial primary key,
+attraction_name varchar(100),
+city_id integer references cities(id_)
+);

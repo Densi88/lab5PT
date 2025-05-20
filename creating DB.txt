@@ -1,15 +1,17 @@
-create table countries(
-id_ serial primary key,
-country_name varchar(100)
+CREATE TABLE countries(
+    id_ INTEGER PRIMARY KEY AUTOINCREMENT,
+    country_name VARCHAR(100)
 );
-Create table cities(
-id_ serial primary key,
-city_name varchar(100),
-population integer check(population>=0),
-country_id integer references countries(id_)
+
+CREATE TABLE cities(
+    id_ INTEGER PRIMARY KEY AUTOINCREMENT,
+    city_name VARCHAR(100),
+    population INTEGER CHECK(population >= 0),
+    country_id INTEGER REFERENCES countries(id_)
 );
-Create table attractions(
-id_ serial primary key,
-attraction_name varchar(100),
-city_id integer references cities(id_)
+
+CREATE TABLE attractions(
+    id_ INTEGER PRIMARY KEY AUTOINCREMENT,
+    attraction_name VARCHAR(100),
+    city_id INTEGER REFERENCES cities(id_)
 );

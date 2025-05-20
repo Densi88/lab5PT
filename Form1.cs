@@ -8,6 +8,7 @@ namespace lab5
         Marker marker;
         Player player;
         Circle circle;
+        Circle secondCircle;
         Random random=new Random();
         int score = 0;
         public Form1()
@@ -17,8 +18,10 @@ namespace lab5
             objects.Add(player);
             marker = new Marker(mainPb.Width / 2+50, mainPb.Height / 2+20, 0);
             objects.Add(marker);
-            circle = new Circle(mainPb.Width / 2 + 20, mainPb.Height / 2 + 10, 0);
+            circle = new Circle(mainPb.Width / 2 + 20, mainPb.Height / 2 + 30, 0);
             objects.Add(circle);
+            secondCircle = new Circle(mainPb.Width / 2+40, mainPb.Height / 2+50, 0);
+            objects.Add(secondCircle);
             player.OnOverlap += (p, obj) => {
                 txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с {obj}\n" + txtLog.Text;
             };
@@ -37,6 +40,16 @@ namespace lab5
                 scoreLabel.Text = $"Очки: {score}";
 
             };
+            secondCircle.OnPlayerOverlap += (p) =>
+            {
+         
+                    txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с шаром\n" + txtLog.Text;
+                    objects.Remove(secondCircle);
+                    secondCircle = null;
+                    scoreLabel.Text = $"Очки: {score}";
+                
+            };
+
         }
 
         private void mainPb_paint(object sender, PaintEventArgs e)
@@ -71,8 +84,8 @@ namespace lab5
                 dx /= length;
                 dy /= length;
 
-                player.X += dx * 12;
-                player.Y += dy * 12;
+                player.X += dx * 20;
+                player.Y += dy * 20;
                
 
             }
@@ -97,13 +110,42 @@ namespace lab5
                     }
                 };
             }
+            if (secondCircle == null)
+            {
+                var circleHeight = 40;
+                var circleLength = 40;
+                var randomX = random.Next(0, mainPb.Width - circleLength);
+                var randomY = random.Next(0, mainPb.Height - circleHeight);
+                secondCircle = new Circle(randomX, randomY, 0);
+                objects.Add(secondCircle);
+
+                secondCircle.OnPlayerOverlap += (p) =>
+                {
+                    if (secondCircle != null)
+                    {
+                        txtLog.Text = $"[{DateTime.Now:HH:mm:ss:ff}] Игрок пересекся с шаром\n" + txtLog.Text;
+                        objects.Remove(secondCircle);
+                        secondCircle = null;
+                        score++;
+                        scoreLabel.Text = $"Очки: {score}";
+                    }
+                };
+
+            }
            
                 circle.timer = circle.timer - 1;
                 circle.UpdateTime(circle.timer);
+                secondCircle.timer = secondCircle.timer - 1;
+                secondCircle.UpdateTime(secondCircle.timer);
             if (circle.timer==0)
             {
                 objects.Remove(circle);
                 circle = null;
+            }
+            if (secondCircle.timer == 0)
+            {
+                objects.Remove(secondCircle);
+                secondCircle = null;
             }
             
             mainPb.Invalidate();
